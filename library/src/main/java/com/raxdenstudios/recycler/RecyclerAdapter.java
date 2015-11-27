@@ -35,6 +35,10 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> ext
         return mData.indexOf(data);
     }
 
+    public T getItem(int position) {
+        return mData.get(position);
+    }
+
     public void addItem(T data) {
         mData.add(data);
         notifyItemInserted(getItemPosition(data));
@@ -47,8 +51,9 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> ext
     }
 
     public void addItems(List<T> data) {
+        int position = mData.size();
         mData.addAll(data);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(position, data.size());
     }
 
     public void addItems(List<T> data, int position) {
@@ -78,6 +83,7 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> ext
 
     public void clearItems() {
         mData = new ArrayList<T>();
+        notifyDataSetChanged();
     }
 
 }
