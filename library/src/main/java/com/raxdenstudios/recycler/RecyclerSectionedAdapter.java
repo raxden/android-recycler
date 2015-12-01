@@ -2,9 +2,10 @@ package com.raxdenstudios.recycler;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,25 +13,76 @@ import java.util.Map;
 /**
  * Created by agomez on 27/11/2015.
  */
-public abstract class RecyclerSectionedAdapter<O, T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewHolder, T, VIH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private enum ViewType {SECTION, ITEM}
 
     protected final Context mContext;
-    protected int mResource;
+    protected int mSectionedResource;
+    protected int mItemResource;
     protected Map<O, List<T>> mData;
+    protected Map<Integer, O> mSectionPositions;
+    protected Map<Integer, T> mItemPositions;
 
-    public RecyclerSectionedAdapter(Context context, int resource) {
-        this(context, resource, null);
+    public RecyclerSectionedAdapter(Context context, int sectionResource, int itemResource) {
+        this(context, sectionResource, itemResource, null);
     }
 
-    public RecyclerSectionedAdapter(Context context, int resource, Map<O, List<T>> data) {
+    public RecyclerSectionedAdapter(Context context, int sectionResource, int itemResource, Map<O, List<T>> data) {
         mContext = context;
-        mResource = resource;
+        mSectionedResource = sectionResource;
+        mItemResource = itemResource;
+        initData(data);
+    }
+
+    private void initData(Map<O, List<T>> data) {
         mData = data != null ? data : new LinkedHashMap<O, List<T>>();
+        mSectionPositions = new HashMap<Integer, O>();
+        mItemPositions = new HashMap<Integer, T>();
+
+        int sectionPosition = 0;
+        for (Map.Entry<O, List<T>> entry : mData.entrySet()) {
+            O section = entry.getKey();
+            mSectionPositions.put(sectionPosition, section);
+            int itemPosition = sectionPosition;
+            for (T item : entry.getValue()) {
+                itemPosition++;
+                mItemPositions.put(itemPosition, item);
+            }
+            sectionPosition += itemPosition + 1;
+        }
     }
 
     @Override
-    public void onBindViewHolder(VH holder, int position) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == ViewType.SECTION.ordinal()) {
+            return onCreateViewSectionHolder(parent);
+        } else if (viewType == ViewType.ITEM.ordinal()) {
+            return onCreateViewItemHolder(parent);
+        }
+        return null;
+    }
 
+    public abstract VSH onCreateViewSectionHolder(ViewGroup parent);
+
+    public abstract VIH onCreateViewItemHolder(ViewGroup parent);
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (isSection(position)) {
+            onBindViewSectionHolder((VSH)holder, mSectionPositions.get(position), position);
+        } else {
+            onBindViewItemHolder((VIH)holder, mItemPositions.get(position), position);
+        }
+    }
+
+    public abstract void onBindViewSectionHolder(VSH holder, O section, int position);
+
+    public abstract void onBindViewItemHolder(VIH holder, T item, int position);
+
+    @Override
+    public int getItemViewType(int position) {
+        return isSection(position) ? ViewType.SECTION.ordinal() : ViewType.ITEM.ordinal();
     }
 
     /**
@@ -39,8 +91,7 @@ public abstract class RecyclerSectionedAdapter<O, T, VH extends RecyclerView.Vie
      * @return true si la posición ocupada es una sección.
      */
     public boolean isSection(int position) {
-        if (position == 0) return false;
-        return true;
+        return mSectionPositions.containsKey(position);
     }
 
     /**
@@ -97,7 +148,7 @@ public abstract class RecyclerSectionedAdapter<O, T, VH extends RecyclerView.Vie
     }
 
     /**
-     * Este método retona la posición que ocupa la sección en el adapter.
+     * Este método retorna la posición que ocupa la sección en el adapter.
      * @param section
      * @return
      */
@@ -178,165 +229,182 @@ public abstract class RecyclerSectionedAdapter<O, T, VH extends RecyclerView.Vie
         return false;
     }
 
-    /**
-     * Este método añade una sección con un listado de elementos al adapter además de notificarlo.
-     * Si la sección existe, añade únicamente los elementos.
-     * @param section
-     * @param data
-     */
-    public void addSection(O section, List<T> data) {
-        int start; int end;
-        if (containsSection(section)) {
-            start = getSectionPosition(section) + mData.get(section).size();
-            mData.get(section).addAll(data);
-        } else {
-            start = getSectionPosition(section);
-            mData.put(section, data);
-        }
-        end = start + data.size();
-        notifyItemRangeInserted(start, end);
-    }
-
-    /**
-     * Este método añade una sección con un elemento al adapter además de notificarlo.
-     * Si la sección existe, añade únicamente el elemento.
-     * @param section
-     * @param data
-     */
-    public void addItem(O section, T data) {
-        if (containsSection(section)) {
-            mData.get(section).add(data);
-        } else {
-            mData.put(section, new ArrayList<>(Arrays.asList(data)));
-        }
-        notifyItemInserted(getItemPosition(section, data));
-    }
-
-    /**
-     * Este método añade una sección con un elemento al adapter además de notificarlo.
-     * Si la sección existe, añade únicamente el elemento.
-     * @param section
-     * @param data
-     */
-    public void addItem(O section, T data, int position) {
-        if (containsSection(section)) {
-            mData.get(section).add(position, data);
-        } else {
-            mData.put(section, new ArrayList<>(Arrays.asList(data)));
-        }
-        notifyItemInserted(getItemPosition(section, data));
-    }
-
-    /**
-     * Este método añade una sección con un elemento al adapter además de notificarlo.
-     * Si la sección existe, añade únicamente el elemento.
-     * @param section
-     * @param data
-     */
-    public void addItems(O section, List<T> data) {
-        int start; int end;
-        if (containsSection(section)) {
-            start = getSectionPosition(section) + mData.get(section).size();
-            mData.get(section).addAll(data);
-        } else {
-            start = getSectionPosition(section);
-            mData.put(section, data);
-        }
-        end = start + data.size();
-        notifyItemRangeInserted(start, end);
-    }
-
-//    public int getSectionPosition(O section) {
-//        return (new ArrayList<O>(mData.keySet())).indexOf(section);
-//    }
-//
-//    public int getSectionItemPosition(int sectionPosition, T data) {
-//        O section = getSection(sectionPosition);
-//        if (section != null) {
-//            int itemPosition = mData.get(section).indexOf(data);
-//            if (itemPosition != -1) {
-//                return itemPosition + sectionPosition;
-//            }
-//        }
-//        return -1;
-//    }
-//
-//    public int getSectionItemPosition(O section, T data) {
-//        int sectionPosition = getSectionPosition(section);
-//        if (sectionPosition != -1) {
-//            return getSectionItemPosition(sectionPosition, data);
-//        }
-//        return -1;
-//    }
-//
-//    public int getSectionItemPosition(T data) {
-//        int sectionPosition = 0;
-//        for (Map.Entry<O, List<T>> entry : mData.entrySet()) {
-//            sectionPosition++;
-//            int position = entry.getValue().indexOf(data);
-//            if (position != -1) {
-//                return position + sectionPosition;
-//            }
-//        }
-//        return -1;
-//    }
-
-
-
-
-
-    private O getSection(int sectionPosition) {
+    public O getSection(int sectionPosition) {
         if (mData.keySet().size() >= sectionPosition) {
             return (O) mData.keySet().toArray()[sectionPosition];
         }
         return null;
     }
 
-    private T getSectionItem(int sectionPosition, int sectionItemPosition) {
+    public T getItem(int sectionPosition, int sectionItemPosition) {
         O section = getSection(sectionPosition);
         if (section != null) {
-            return getSectionItem(section, sectionItemPosition);
+            return getItem(section, sectionItemPosition);
         }
         return null;
     }
 
-    private T getSectionItem(O section, int sectionItemPosition) {
+    public T getItem(O section, int sectionItemPosition) {
         return mData.get(section).get(sectionItemPosition);
     }
 
-
-
-
-
-
-
-    public void removeItem(O section, T data){
-        int sectionPosition = getSectionPosition(section);
-        int itemPosition = getSectionItemPosition(sectionPosition, data);
-        if (mData.get(sectionPosition).remove(data)) {
-            notifyItemRemoved(itemPosition);
+    public List<T> getItems(int sectionPosition) {
+        O section = getSection(sectionPosition);
+        if (section != null) {
+            return getItems(section);
         }
+        return null;
     }
 
-    public void removeItem(O section, int position){
-        int sectionPosition = getSectionPosition(section);
-        if (mData.get(sectionPosition).size() > position) {
-            mData.get(sectionPosition).remove(position);
-            notifyItemRemoved(sectionPosition + position);
-        }
+    public List<T> getItems(O section) {
+        return mData.get(section);
     }
 
-    public void clearItems(O section) {
-        int sectionPosition = getSectionPosition(section);
-        if (sectionPosition != -1) {
+    /**
+     * Añade una sección sin elementos asociados. Una vez creada notifica al adapter de la inserción.
+     * @param section
+     * @return true si la sección es creada correctamente.
+     */
+    public boolean addSection(O section) {
+        if (!containsSection(section)) {
+            mData.put(section, new ArrayList<T>());
+            int sectionPosition = getSectionPosition(section);
+            mSectionPositions.put(sectionPosition, section);
+            notifyItemInserted(sectionPosition);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Añade una sección con un listado de elementos asociados. Una vez creada notifica al adapter de la inserción.
+     * @param section
+     * @param data
+     * @return true si la sección es creada correctamente.
+     */
+    public boolean addSection(O section, List<T> data) {
+        if (!containsSection(section)) {
+            mData.put(section, data);
+            int sectionPosition = getSectionPosition(section);
+            mSectionPositions.put(sectionPosition, section);
+            int itemPosition = sectionPosition;
+            for (T item : data) {
+                itemPosition++;
+                mItemPositions.put(itemPosition, item);
+            }
+            notifyItemRangeInserted(sectionPosition, itemPosition);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Añade un item a la sección del listado del adapter. Una vez añadido notifica al adapter de la inserción.
+     * @param section
+     * @param data
+     * @return true si la sección es creada correctamente.
+     */
+    public boolean addItem(O section, T data) {
+        if (containsSection(section)) {
+            mData.get(section).add(data);
+            int itemPosition = getItemPosition(section, data);
+            mItemPositions.put(itemPosition, data);
+            notifyItemInserted(itemPosition);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Añade un item a la sección del listado del adapter en una posición concreta. Una vez añadido notifica al adapter de la inserción.
+     * Si la sección existe, añade únicamente el elemento.
+     * @param section
+     * @param data
+     * @param position
+     * @return true si el elemento es añadido correctamente
+     */
+    public boolean addItem(O section, T data, int position) {
+        if (containsSection(section)) {
+            mData.get(section).add(position, data);
+            int itemPosition = getItemPosition(section, data);
+            mItemPositions.put(itemPosition, data);
+            notifyItemInserted(itemPosition);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Este método añade una sección con un elemento al adapter además de notificarlo.
+     * Si la sección existe, añade únicamente el elemento.
+     * @param section
+     * @param data
+     * @return true si los elementos son añadidos correctamente
+     */
+    public boolean addItems(O section, List<T> data) {
+        if (containsSection(section)) {
+            int start = getSectionPosition(section) + mData.get(section).size();
+            int itemPosition = start;
+            mData.get(section).addAll(data);
+            for (T item : data) {
+                itemPosition++;
+                mItemPositions.put(itemPosition, item);
+            }
+            int end = start + data.size();
+            notifyItemRangeInserted(start, end);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeSection(O section) {
+        if (containsSection(section)) {
+            int sectionPosition = getSectionPosition(section);
             int sizeData = mData.get(section).size();
             mData.get(section).clear();
+            mSectionPositions.remove(sectionPosition);
             notifyItemRangeRemoved(sectionPosition, sizeData);
+            return true;
         }
+        return false;
     }
 
-    public void clearItems() {
-        mData = new LinkedHashMap<O, List<T>>();
+    public boolean removeItem(O section, T data){
+        if (containsItem(section, data)) {
+            int itemPosition = getItemPosition(section, data);
+            mData.get(section).remove(data);
+            notifyItemRemoved(itemPosition);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeItem(O section, int position){
+        if (containsSection(section) && mData.get(section).size() > position) {
+            T item = mData.get(section).get(position);
+            if (item != null) {
+                mData.get(section).remove(item);
+                notifyItemRemoved(getSectionPosition(section) + position);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean removeItems(O section) {
+        if (containsSection(section)) {
+            int sectionPosition = getSectionPosition(section);
+            int sizeData = mData.get(section).size();
+            mData.get(section).clear();
+            notifyItemRangeRemoved(sectionPosition + 1 , sizeData);
+        }
+        return false;
+    }
+
+    public void removeItems() {
+        mData.clear();
+        mSectionPositions.clear();
+        mItemPositions.clear();
         notifyDataSetChanged();
     }
 

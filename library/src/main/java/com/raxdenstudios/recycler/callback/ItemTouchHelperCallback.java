@@ -14,9 +14,27 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
     private static final float ALPHA_FULL = 1.0f;
 
     private final ItemTouchHelperAdapter mAdapter;
+    private final boolean mLongPressDragEnabled;
+    private final boolean mItemViewSwipeEnabled;
 
     public ItemTouchHelperCallback(ItemTouchHelperAdapter adapter) {
+        this(adapter, false, false);
+    }
+
+    public ItemTouchHelperCallback(ItemTouchHelperAdapter adapter, boolean itemViewSwipeEnabled, boolean longPressDragEnabled) {
         mAdapter = adapter;
+        mItemViewSwipeEnabled = itemViewSwipeEnabled;
+        mLongPressDragEnabled = longPressDragEnabled;
+    }
+
+    @Override
+    public boolean isLongPressDragEnabled() {
+        return mLongPressDragEnabled;
+    }
+
+    @Override
+    public boolean isItemViewSwipeEnabled() {
+        return mItemViewSwipeEnabled;
     }
 
     @Override
@@ -64,15 +82,17 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
         // We only want the active item to change
-        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-            if (viewHolder instanceof ItemTouchViewHolderCallback) {
-                // Let the view holder know that this item is being moved
-                ((ItemTouchViewHolderCallback)viewHolder).onItemSwiped();
-            }
-        } else if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-            if (viewHolder instanceof ItemTouchViewHolderCallback) {
-                // Let the view holder know that this item is being dragged
-                ((ItemTouchViewHolderCallback)viewHolder).onItemMoved();
+        if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                if (viewHolder instanceof ItemTouchViewHolderCallback) {
+                    // Let the view holder know that this item is being moved
+                    ((ItemTouchViewHolderCallback) viewHolder).onItemSwiped();
+                }
+            } else if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                if (viewHolder instanceof ItemTouchViewHolderCallback) {
+                    // Let the view holder know that this item is being dragged
+                    ((ItemTouchViewHolderCallback) viewHolder).onItemMoved();
+                }
             }
         }
 

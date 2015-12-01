@@ -27,6 +27,13 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> ext
     }
 
     @Override
+    public void onBindViewHolder(VH holder, int position) {
+        onBindViewItemHolder(holder, getItem(position), position);
+    }
+
+    public abstract void onBindViewItemHolder(VH holder, T data, int position);
+
+    @Override
     public int getItemCount() {
         return mData.size();
     }

@@ -1,10 +1,8 @@
 package com.raxdenstudios.recycler;
 
 import android.content.Context;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.raxdenstudios.recycler.callback.ItemTouchHelperCallback;
@@ -16,7 +14,7 @@ import java.util.List;
  */
 public abstract class RecyclerItemTouchAdapter<T, VH extends ItemTouchViewHolder> extends RecyclerAdapter<T, VH> implements ItemTouchHelperCallback.ItemTouchHelperAdapter {
 
-    private ItemTouchHelper mItemTouchHelper;
+    protected ItemTouchHelper mItemTouchHelper;
 
     public RecyclerItemTouchAdapter(Context context, int resource) {
         super(context, resource, null);
@@ -26,15 +24,25 @@ public abstract class RecyclerItemTouchAdapter<T, VH extends ItemTouchViewHolder
         super(context, resource, data);
     }
 
+    public boolean isLongPressDragEnabled() {
+        return true;
+    }
+
+    public boolean isItemViewSwipeEnabled() {
+        return true;
+    }
+
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(this);
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(this, isItemViewSwipeEnabled(), isLongPressDragEnabled());
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @Override
     public void onBindViewHolder(final VH viewHolder, int position) {
+        super.onBindViewHolder(viewHolder, position);
+
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,15 +53,6 @@ public abstract class RecyclerItemTouchAdapter<T, VH extends ItemTouchViewHolder
             @Override
             public boolean onLongClick(View v) {
                 return viewHolder.onItemLongSelected();
-            }
-        });
-        viewHolder.itemView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    mItemTouchHelper.startDrag(viewHolder);
-                }
-                return false;
             }
         });
     }
