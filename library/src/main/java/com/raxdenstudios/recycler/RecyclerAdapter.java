@@ -42,8 +42,17 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> ext
         return mData.indexOf(data);
     }
 
+    public List<T> getItems() {
+        return mData;
+    }
+
     public T getItem(int position) {
         return mData.get(position);
+    }
+
+    public void setItems(List<T> data) {
+        mData = data;
+        notifyDataSetChanged();
     }
 
     public void addItem(T data) {

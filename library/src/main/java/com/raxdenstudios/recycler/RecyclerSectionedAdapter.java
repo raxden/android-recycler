@@ -69,10 +69,12 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (isSection(position)) {
-            onBindViewSectionHolder((VSH)holder, mSectionPositions.get(position), position);
-        } else {
-            onBindViewItemHolder((VIH)holder, mItemPositions.get(position), position);
+        if (holder != null) {
+            if (isSection(position)) {
+                onBindViewSectionHolder((VSH) holder, mSectionPositions.get(position), position);
+            } else {
+                onBindViewItemHolder((VIH) holder, mItemPositions.get(position), position);
+            }
         }
     }
 
@@ -262,6 +264,7 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
 
     public void setItems(Map<O, List<T>> data) {
         initData(data);
+        notifyDataSetChanged();
     }
 
     /**
