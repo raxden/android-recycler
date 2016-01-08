@@ -260,6 +260,10 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
         return mData.get(section);
     }
 
+    public void setItems(Map<O, List<T>> data) {
+        initData(data);
+    }
+
     /**
      * Añade una sección sin elementos asociados. Una vez creada notifica al adapter de la inserción.
      * @param section
