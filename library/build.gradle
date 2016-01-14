@@ -2,14 +2,14 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'com.raxdenstudios'
-version = '2.1.2'
+version = '2.2.0'
 
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        minSdkVersion 10
+        minSdkVersion 16
         targetSdkVersion 23
     }
 
@@ -28,19 +28,15 @@ android {
 }
 
 repositories {
-    jcenter()
     maven { url "https://jitpack.io" }
-    flatDir {
-        dirs 'libs'
-    }
 }
 
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
 
-    compile 'com.google.android.gms:play-services:8.3.0'
+    compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
 
-    compile 'com.github.raxden:AndroidCommons:v2.1.20@aar'
+    compile 'com.github.raxden:AndroidCommons:v2.2.0@aar'
 }

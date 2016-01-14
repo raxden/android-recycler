@@ -97,6 +97,14 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> ext
         notifyItemMoved(fromPosition, toPosition);
     }
 
+    public void updateItem(T data) {
+        updateItem(mData.indexOf(data));
+    }
+
+    public void updateItem(int position) {
+        notifyItemChanged(position);
+    }
+
     public void clearItems() {
         mData = new ArrayList<T>();
         notifyDataSetChanged();
