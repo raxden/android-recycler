@@ -97,6 +97,15 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     }
 
     /**
+     * Este método nos indica si el item del adaptador es un item a través de la posición enviada por parámetro.
+     * @param position
+     * @return true si la posición ocupada es un item.
+     */
+    public boolean isItem(int position) {
+        return mItemPositions.containsKey(position);
+    }
+
+    /**
      * Este método nos indica el rango de posiciones que ocupa la sección en el adaptador.
      * @param section
      * @return int[0] posición de inicio de la sección, int[1] posición final de la sección.
@@ -231,9 +240,23 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
         return false;
     }
 
+    public O getSectionByAdapterPosition(int position) {
+        if (isSection(position)) {
+            return mSectionPositions.get(position);
+        }
+        return null;
+    }
+
     public O getSection(int sectionPosition) {
         if (mData.keySet().size() >= sectionPosition) {
             return (O) mData.keySet().toArray()[sectionPosition];
+        }
+        return null;
+    }
+
+    public T getItemByAdapterPosition(int position) {
+        if (isItem(position)) {
+            return mItemPositions.get(position);
         }
         return null;
     }

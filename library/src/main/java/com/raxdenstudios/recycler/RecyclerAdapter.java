@@ -2,6 +2,7 @@ package com.raxdenstudios.recycler;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +26,9 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> ext
         mResource = resource;
         mData = data != null ? data : new ArrayList<T>();
     }
+
+    @Override
+    public abstract VH onCreateViewHolder(ViewGroup parent, int viewType);
 
     @Override
     public void onBindViewHolder(VH holder, int position) {
