@@ -49,7 +49,7 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
                 itemPosition++;
                 mItemPositions.put(itemPosition, item);
             }
-            sectionPosition += itemPosition + 1;
+            sectionPosition = itemPosition + 1;
         }
     }
 
