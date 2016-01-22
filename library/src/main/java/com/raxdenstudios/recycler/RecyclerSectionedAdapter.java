@@ -387,6 +387,30 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
         return false;
     }
 
+    public void updateItem(T data) {
+        for (Map.Entry<Integer, T> entry : mItemPositions.entrySet()) {
+            if (entry.getValue().equals(data)) {
+                notifyItemChanged(entry.getKey());
+            }
+        }
+    }
+
+    public void updateItem(O section, T data) {
+        if (containsItem(section, data)) {
+            int position = getItemPosition(section, data);
+            notifyItemChanged(position);
+        }
+    }
+
+    public void updateItem(O section, int position) {
+        if (containsSection(section) && mData.get(section).size() > position) {
+            T item = mData.get(section).get(position);
+            if (item != null) {
+                notifyItemChanged(getSectionPosition(section) + position);
+            }
+        }
+    }
+
     public boolean removeSection(O section) {
         if (containsSection(section)) {
             int sectionPosition = getSectionPosition(section);
