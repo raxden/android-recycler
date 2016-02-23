@@ -185,7 +185,7 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
      */
     public int getItemPosition(O section, T data) {
         if (containsSection(section)) {
-            return getSectionPosition(section) + mData.get(section).indexOf(data);
+            return getSectionPosition(section) + mData.get(section).indexOf(data) + 1;
         }
         return -1;
     }
@@ -283,6 +283,10 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
 
     public List<T> getItems(O section) {
         return mData.get(section);
+    }
+
+    public Map<O, List<T>> getItems() {
+        return mData;
     }
 
     public void setItems(Map<O, List<T>> data) {
@@ -397,8 +401,7 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
 
     public void updateItem(O section, T data) {
         if (containsItem(section, data)) {
-            int position = getItemPosition(section, data);
-            notifyItemChanged(position);
+            notifyItemChanged(getItemPosition(section, data));
         }
     }
 
