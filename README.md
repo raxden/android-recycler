@@ -3,7 +3,8 @@ Android Recycler
 
 Android Recycler is a util library with a set of useful classes to help implement RecyclerView. Works on Android 4.1 (API level 16) and upwards.
 
-[![Release](https://img.shields.io/github/release/raxden/AndroidRecycler.svg?label=maven central)](https://jitpack.io/#raxden/AndroidRecycler/) [![API](https://img.shields.io/badge/API-16%2B-green.svg?style=flat)](https://android-arsenal.com/api?level=16)
+[![Release](https://img.shields.io/github/tag/raxden/AndroidRecycler.svg?label=Download)](https://jitpack.io/#raxden/AndroidRecycler/) 
+[![API](https://img.shields.io/badge/API-16%2B-green.svg?style=flat)](https://android-arsenal.com/api?level=16)
 
 ## Usage
 
@@ -18,7 +19,7 @@ repositories {
 }
 
 dependencies {
-	    compile 'com.github.raxden:AndroidRecycler:v2.2.3@aar'
+	    compile 'com.github.raxden:AndroidRecycler:2.2.4@aar'
 }
 ```
 
@@ -33,7 +34,7 @@ dependencies {
 <dependency>
 	    <groupId>com.github.raxden</groupId>
 	    <artifactId>AndroidRecycler</artifactId>
-	    <version>v2.2.3</version>
+	    <version>2.2.4</version>
 </dependency>
 ```
 
@@ -43,4 +44,4 @@ dependencies {
 
 ### Documentation 
 
-For a **detailed documentation**, please have a look at the [**Wiki**](https://github.com/raxden/AndroidRecycler/wiki) or the [**Javadocs**](https://jitpack.io/com/github/raxden/AndroidRecycler/v2.2.3/javadoc/).
+For a **detailed documentation**, please have a look at the [**Wiki**](https://github.com/raxden/AndroidRecycler/wiki) or the [**Javadocs**](https://jitpack.io/com/github/raxden/AndroidRecycler/2.2.4/javadoc/).
