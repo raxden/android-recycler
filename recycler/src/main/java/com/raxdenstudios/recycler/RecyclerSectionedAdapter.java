@@ -17,6 +17,8 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
 
     private enum ViewType {SECTION, ITEM}
 
+    private O currentSection;
+
     protected final Context mContext;
     protected int mSectionedResource;
     protected int mItemResource;
@@ -71,9 +73,10 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder != null) {
             if (isSection(position)) {
-                onBindViewSectionHolder((VSH) holder, mSectionPositions.get(position), position);
+                currentSection = mSectionPositions.get(position);
+                onBindViewSectionHolder((VSH) holder, currentSection, position);
             } else {
-                onBindViewItemHolder((VIH) holder, mSectionPositions.get(position), mItemPositions.get(position), position);
+                onBindViewItemHolder((VIH) holder, currentSection, mItemPositions.get(position), position);
             }
         }
     }
