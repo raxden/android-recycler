@@ -73,14 +73,14 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
             if (isSection(position)) {
                 onBindViewSectionHolder((VSH) holder, mSectionPositions.get(position), position);
             } else {
-                onBindViewItemHolder((VIH) holder, mItemPositions.get(position), position);
+                onBindViewItemHolder((VIH) holder, mSectionPositions.get(position), mItemPositions.get(position), position);
             }
         }
     }
 
     public abstract void onBindViewSectionHolder(VSH holder, O section, int position);
 
-    public abstract void onBindViewItemHolder(VIH holder, T item, int position);
+    public abstract void onBindViewItemHolder(VIH holder, O section, T item, int position);
 
     @Override
     public int getItemViewType(int position) {
