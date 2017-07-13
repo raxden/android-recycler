@@ -73,10 +73,9 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder != null) {
             if (isSection(position)) {
-                currentSection = mSectionPositions.get(position);
-                onBindViewSectionHolder((VSH) holder, currentSection, position);
+                onBindViewSectionHolder((VSH) holder, getSectionByAdapterPosition(position), position);
             } else {
-                onBindViewItemHolder((VIH) holder, currentSection, mItemPositions.get(position), position);
+                onBindViewItemHolder((VIH) holder, getSectionByAdapterPosition(position), mItemPositions.get(position), position);
             }
         }
     }
@@ -244,10 +243,20 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     }
 
     public O getSectionByAdapterPosition(int position) {
+        O section = null;
         if (isSection(position)) {
-            return mSectionPositions.get(position);
+            section = mSectionPositions.get(position);
+        } else {
+            for (Map.Entry<Integer, O> entry : mSectionPositions.entrySet()) {
+                O possibleSection = entry.getValue();
+                int range[] = getRangePosition(possibleSection);
+                if (position >= range[0] && position <= range[1]) {
+                    section = possibleSection;
+                    break;
+                }
+            }
         }
-        return null;
+        return section;
     }
 
     public O getSection(int sectionPosition) {
