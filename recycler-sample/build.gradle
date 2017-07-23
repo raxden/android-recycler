@@ -29,5 +29,7 @@ dependencies {
     compile libraryDependencies.compile
     testCompile libraryDependencies.testCompile
 
+    compile "com.android.support:appcompat-v7:25.4.0"
+
     compile project(':recycler')
 }
