@@ -26,10 +26,10 @@ repositories {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    compile deps.androidv7
-    compile deps.androidRecycler
-    compile deps.androidDesign
-    compile deps.androidCommons
+    compile libraryDependencies.compile
+    testCompile libraryDependencies.testCompile
+
+    compile "com.android.support:appcompat-v7:25.4.0"
 
     compile project(':recycler')
 }

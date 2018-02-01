@@ -17,6 +17,8 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
 
     private enum ViewType {SECTION, ITEM}
 
+    private O currentSection;
+
     protected final Context mContext;
     protected int mSectionedResource;
     protected int mItemResource;
@@ -71,16 +73,16 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder != null) {
             if (isSection(position)) {
-                onBindViewSectionHolder((VSH) holder, mSectionPositions.get(position), position);
+                onBindViewSectionHolder((VSH) holder, getSectionByAdapterPosition(position), position);
             } else {
-                onBindViewItemHolder((VIH) holder, mItemPositions.get(position), position);
+                onBindViewItemHolder((VIH) holder, getSectionByAdapterPosition(position), mItemPositions.get(position), position);
             }
         }
     }
 
     public abstract void onBindViewSectionHolder(VSH holder, O section, int position);
 
-    public abstract void onBindViewItemHolder(VIH holder, T item, int position);
+    public abstract void onBindViewItemHolder(VIH holder, O section, T item, int position);
 
     @Override
     public int getItemViewType(int position) {
@@ -241,10 +243,20 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     }
 
     public O getSectionByAdapterPosition(int position) {
+        O section = null;
         if (isSection(position)) {
-            return mSectionPositions.get(position);
+            section = mSectionPositions.get(position);
+        } else {
+            for (Map.Entry<Integer, O> entry : mSectionPositions.entrySet()) {
+                O possibleSection = entry.getValue();
+                int range[] = getRangePosition(possibleSection);
+                if (position >= range[0] && position <= range[1]) {
+                    section = possibleSection;
+                    break;
+                }
+            }
         }
-        return null;
+        return section;
     }
 
     public O getSection(int sectionPosition) {
