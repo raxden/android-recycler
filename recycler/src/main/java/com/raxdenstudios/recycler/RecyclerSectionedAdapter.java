@@ -22,6 +22,8 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     protected Map<Integer, O> mSectionPositions;
     protected Map<Integer, T> mItemPositions;
 
+    private int mViewTypePosition;
+
     public RecyclerSectionedAdapter(Context context) {
         this(context, null);
     }
@@ -52,9 +54,9 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ViewType.SECTION.ordinal()) {
-            return onCreateViewSectionHolder(parent, getSectionViewType(viewType));
+            return onCreateViewSectionHolder(parent, getSectionViewType(mViewTypePosition));
         } else if (viewType == ViewType.ITEM.ordinal()) {
-            return onCreateViewItemHolder(parent, getSectionItemViewType(viewType));
+            return onCreateViewItemHolder(parent, getSectionItemViewType(mViewTypePosition));
         }
         return null;
     }
@@ -80,6 +82,7 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
 
     @Override
     public final int getItemViewType(int position) {
+        mViewTypePosition = position;
         return isSection(position) ? ViewType.SECTION.ordinal() : ViewType.ITEM.ordinal();
     }
 
