@@ -19,8 +19,12 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
 
-    compile libraryDependencies.compile
-    testCompile libraryDependencies.testCompile
+    implementation deps.recycler.implementation
+    api deps.recycler.api
+    annotationProcessor deps.recycler.annotationProcessor
+    compileOnly deps.recycler.compileOnly
+    testImplementation deps.recycler.testImplementation
+    androidTestImplementation deps.recycler.androidTestImplementation
 }
 
 apply from: '../buildSystem/commons.gradle'

@@ -10,6 +10,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -24,12 +26,14 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile libraryDependencies.compile
-    testCompile libraryDependencies.testCompile
+    implementation project(':recycler')
 
-    compile "com.android.support:appcompat-v7:25.4.0"
-
-    compile project(':recycler')
+    implementation deps.recycler_sample.implementation
+    api deps.recycler_sample.api
+    annotationProcessor deps.recycler_sample.annotationProcessor
+    compileOnly deps.recycler_sample.compileOnly
+    testImplementation deps.recycler_sample.testImplementation
+    androidTestImplementation deps.recycler_sample.androidTestImplementation
 }

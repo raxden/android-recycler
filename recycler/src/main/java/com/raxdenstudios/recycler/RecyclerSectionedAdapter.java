@@ -17,23 +17,17 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
 
     private enum ViewType {SECTION, ITEM}
 
-    private O currentSection;
-
     protected final Context mContext;
-    protected int mSectionedResource;
-    protected int mItemResource;
     protected Map<O, List<T>> mData;
     protected Map<Integer, O> mSectionPositions;
     protected Map<Integer, T> mItemPositions;
 
-    public RecyclerSectionedAdapter(Context context, int sectionResource, int itemResource) {
-        this(context, sectionResource, itemResource, null);
+    public RecyclerSectionedAdapter(Context context) {
+        this(context, null);
     }
 
-    public RecyclerSectionedAdapter(Context context, int sectionResource, int itemResource, Map<O, List<T>> data) {
+    public RecyclerSectionedAdapter(Context context, Map<O, List<T>> data) {
         mContext = context;
-        mSectionedResource = sectionResource;
-        mItemResource = itemResource;
         initData(data);
     }
 
@@ -58,16 +52,16 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ViewType.SECTION.ordinal()) {
-            return onCreateViewSectionHolder(parent);
+            return onCreateViewSectionHolder(parent, getSectionViewType(viewType));
         } else if (viewType == ViewType.ITEM.ordinal()) {
-            return onCreateViewItemHolder(parent);
+            return onCreateViewItemHolder(parent, getSectionItemViewType(viewType));
         }
         return null;
     }
 
-    public abstract VSH onCreateViewSectionHolder(ViewGroup parent);
+    public abstract VSH onCreateViewSectionHolder(ViewGroup parent, int viewSectionType);
 
-    public abstract VIH onCreateViewItemHolder(ViewGroup parent);
+    public abstract VIH onCreateViewItemHolder(ViewGroup parent, int viewItemType);
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -87,6 +81,38 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     @Override
     public int getItemViewType(int position) {
         return isSection(position) ? ViewType.SECTION.ordinal() : ViewType.ITEM.ordinal();
+    }
+
+    /**
+     * Return the view type of the section at <code>position</code> for the purposes
+     * of view recycling.
+     *
+     * <p>The default implementation of this method returns 0, making the assumption of
+     * a single view type for the adapter. Unlike ListView adapters, types need not
+     * be contiguous. Consider using id resources to uniquely identify item view types.
+     *
+     * @param position position to query
+     * @return integer value identifying the type of the view needed to represent the item at
+     *                 <code>position</code>. Type codes need not be contiguous.
+     */
+    public int getSectionViewType(int position) {
+        return 0;
+    }
+
+    /**
+     * Return the view type of the sectionItem at <code>position</code> for the purposes
+     * of view recycling.
+     *
+     * <p>The default implementation of this method returns 0, making the assumption of
+     * a single view type for the adapter. Unlike ListView adapters, types need not
+     * be contiguous. Consider using id resources to uniquely identify item view types.
+     *
+     * @param position position to query
+     * @return integer value identifying the type of the view needed to represent the item at
+     *                 <code>position</code>. Type codes need not be contiguous.
+     */
+    public int getSectionItemViewType(int position) {
+        return 0;
     }
 
     /**
