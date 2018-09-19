@@ -79,7 +79,7 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     public abstract void onBindViewItemHolder(VIH holder, O section, T item, int position);
 
     @Override
-    public int getItemViewType(int position) {
+    public final int getItemViewType(int position) {
         return isSection(position) ? ViewType.SECTION.ordinal() : ViewType.ITEM.ordinal();
     }
 
