@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-	    compile 'com.github.raxden:AndroidRecycler:3.0.10@aar'
+	    compile 'com.github.raxden:AndroidRecycler:3.0.11@aar'
 }
 ```
 
@@ -34,7 +34,7 @@ dependencies {
 <dependency>
 	    <groupId>com.github.raxden</groupId>
 	    <artifactId>AndroidRecycler</artifactId>
-	    <version>3.0.10</version>
+	    <version>3.0.11</version>
 </dependency>
 ```
 
@@ -44,7 +44,7 @@ dependencies {
 
 ### Documentation 
 
-For a **detailed documentation**, please have a look at the [**Wiki**](https://github.com/raxden/AndroidRecycler/wiki) or the [**Javadocs**](https://jitpack.io/com/github/raxden/AndroidRecycler/3.0.10/javadoc/).
+For a **detailed documentation**, please have a look at the [**Wiki**](https://github.com/raxden/AndroidRecycler/wiki) or the [**Javadocs**](https://jitpack.io/com/github/raxden/AndroidRecycler/3.0.11/javadoc/).
 
 ## LICENSE
 

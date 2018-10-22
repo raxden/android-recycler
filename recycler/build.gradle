@@ -1,12 +1,13 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
-group = "com.raxdenstudios"
+group = "com.raxdenstudios.recycler"
 version = VERSION_NAME
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -14,17 +15,18 @@ android {
 
         consumerProguardFiles 'proguard-rules.pro'
     }
+
+    androidExtensions {
+        experimental = true
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
+    implementation fileTree(include: '*.jar', dir: 'libs')
 
-    implementation deps.recycler.implementation
-    api deps.recycler.api
-    annotationProcessor deps.recycler.annotationProcessor
-    compileOnly deps.recycler.compileOnly
-    testImplementation deps.recycler.testImplementation
-    androidTestImplementation deps.recycler.androidTestImplementation
+    rootProject.libDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
 }
 
 apply from: '../buildSystem/commons.gradle'

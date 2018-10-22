@@ -1,7 +1,6 @@
 package com.raxdenstudios.recycler;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -9,6 +8,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by agomez on 27/11/2015.
@@ -21,8 +22,6 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     protected Map<O, List<T>> mData;
     protected Map<Integer, O> mSectionPositions;
     protected Map<Integer, T> mItemPositions;
-
-    private int mViewTypePosition;
 
     public RecyclerSectionedAdapter(Context context) {
         this(context, null);
@@ -54,16 +53,16 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ViewType.SECTION.ordinal()) {
-            return onCreateViewSectionHolder(parent, getSectionViewType(mViewTypePosition));
+            return onCreateViewSectionHolder(parent);
         } else if (viewType == ViewType.ITEM.ordinal()) {
-            return onCreateViewItemHolder(parent, getSectionItemViewType(mViewTypePosition));
+            return onCreateViewItemHolder(parent);
         }
         return null;
     }
 
-    public abstract VSH onCreateViewSectionHolder(ViewGroup parent, int viewSectionType);
+    public abstract VSH onCreateViewSectionHolder(ViewGroup parent);
 
-    public abstract VIH onCreateViewItemHolder(ViewGroup parent, int viewItemType);
+    public abstract VIH onCreateViewItemHolder(ViewGroup parent);
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -82,7 +81,6 @@ public abstract class RecyclerSectionedAdapter<O, VSH extends RecyclerView.ViewH
 
     @Override
     public final int getItemViewType(int position) {
-        mViewTypePosition = position;
         return isSection(position) ? ViewType.SECTION.ordinal() : ViewType.ITEM.ordinal();
     }
 

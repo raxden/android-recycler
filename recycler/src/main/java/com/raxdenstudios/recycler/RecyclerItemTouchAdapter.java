@@ -1,13 +1,14 @@
 package com.raxdenstudios.recycler;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import com.raxdenstudios.recycler.callback.ItemTouchHelperCallback;
 
 import java.util.List;
+
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by agomez on 26/11/2015.

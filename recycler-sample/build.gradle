@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.raxdenstudios.recycler.sample"
@@ -30,10 +29,7 @@ dependencies {
 
     implementation project(':recycler')
 
-    implementation deps.recycler_sample.implementation
-    api deps.recycler_sample.api
-    annotationProcessor deps.recycler_sample.annotationProcessor
-    compileOnly deps.recycler_sample.compileOnly
-    testImplementation deps.recycler_sample.testImplementation
-    androidTestImplementation deps.recycler_sample.androidTestImplementation
+    rootProject.appDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
 }
