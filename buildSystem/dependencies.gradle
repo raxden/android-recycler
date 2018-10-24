@@ -1,10 +1,11 @@
 
 ext {
 
+    // ========== VERSIONS =========================================================================
+
     // Android dependencies
-    def appCompatLibraryVersion = '1.0.0'
+    def supportVersion = '28.0.0'
     def constraintLayoutVersion = '1.1.3'
-    def materialVersion = '1.0.0'
     def kotlinVersion = '1.2.71'
 
     // Testing
@@ -13,14 +14,12 @@ ext {
     def mockitoVersion = '1.10.19'
     def robolectricVersion = '3.6.1'
 
-
     // ========== LIBRARIES ========================================================================
 
     def androidLibs = [
-            appCompat: [group: 'androidx.appcompat', name: 'appcompat', version: appCompatLibraryVersion],
-            recycler: [group: 'androidx.recyclerview', name: 'recyclerview', version: appCompatLibraryVersion],
-            constraintLayout: [group: 'androidx.constraintlayout', name: 'constraintlayout', version: constraintLayoutVersion],
-            material: [group: 'com.google.android.material', name: 'material', version: materialVersion],
+            supportV7: [group: 'com.android.support', name: 'appcompat-v7', version: supportVersion],
+            recyclerView: [group: 'com.android.support', name: 'recyclerview-v7', version: supportVersion],
+            constraintLayout: [group: 'com.android.support.constraint', name: 'constraint-layout', version: constraintLayoutVersion],
             kotlin: [group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk7', version: kotlinVersion]
     ]
 
@@ -38,10 +37,14 @@ ext {
 
     // ========== MODULES DEPENDENCIES =============================================================
 
+    def modules = [
+            sample: ':recycler-sample',
+            recycler: ':recycler'
+    ]
+
     libDependencies = [
-            [configuration: "compileOnly", dependency: androidLibs.appCompat],
-            [configuration: "compileOnly", dependency: androidLibs.recycler],
-            [configuration: "compileOnly", dependency: androidLibs.material],
+            [configuration: "compileOnly", dependency: androidLibs.supportV7],
+            [configuration: "compileOnly", dependency: androidLibs.recyclerView],
             [configuration: "compileOnly", dependency: androidLibs.kotlin],
             [configuration: "testImplementation", dependency: testLibs.junit],
             [configuration: "testImplementation", dependency: testLibs.assertj],
@@ -51,9 +54,9 @@ ext {
     ]
 
     appDependencies = [
-            [configuration: "implementation", dependency: androidLibs.appCompat],
-            [configuration: "implementation", dependency: androidLibs.recycler],
-            [configuration: "implementation", dependency: androidLibs.material],
+            [configuration: "implementation", dependency: project(modules.recycler)],
+            [configuration: "implementation", dependency: androidLibs.supportV7],
+            [configuration: "implementation", dependency: androidLibs.recyclerView],
             [configuration: "implementation", dependency: androidLibs.constraintLayout],
             [configuration: "implementation", dependency: androidLibs.kotlin],
             [configuration: "testImplementation", dependency: testLibs.junit],
@@ -62,4 +65,5 @@ ext {
             [configuration: "testImplementation", dependency: testLibs.robolectric],
             [configuration: "testImplementation", dependency: testLibs.robolectricShadowsMultidex],
     ]
+
 }

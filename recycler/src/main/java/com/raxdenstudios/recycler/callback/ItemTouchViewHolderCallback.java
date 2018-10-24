@@ -1,6 +1,6 @@
 package com.raxdenstudios.recycler.callback;
 
-import androidx.recyclerview.widget.ItemTouchHelper;
+import android.support.v7.widget.helper.ItemTouchHelper;
 
 /**
  * Created by agomez on 26/11/2015.

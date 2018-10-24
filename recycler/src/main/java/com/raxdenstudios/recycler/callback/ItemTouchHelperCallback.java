@@ -2,10 +2,9 @@ package com.raxdenstudios.recycler.callback;
 
 import android.graphics.Canvas;
 import android.os.Build;
-
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 
 /**
  * Created by agomez on 26/11/2015.
